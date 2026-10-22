@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Manual simplificado: REA en Claude Code</title>
+<meta name="description" content="Manual simplificado para instalar REA en Claude Code, en Windows y Mac, sin tecnicismos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,400..900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c2a6b'/%3E%3Cpath d='M52.7 30.4A21 21 0 1 1 35.6 13.3' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M36 21V36A7 7 0 0 1 22 36' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='46.8' cy='19.2' r='4.4' fill='%2300B27E'/%3E%3C/svg%3E">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   MARCA JONATAN CORREA · sistema Altitud · ajuste Profundidad (oct 2026)
+   Hoja base: tokens, tipografía, componentes y movimiento.
+   Va junto a movimiento.js. Sin dependencias.
+
+   Fuentes (pegar en <head>, antes de esta hoja):
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,400..900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Tokens · modo claro ──
+   Cinco colores: Tinta (titulares y texto), Papel (fondos), Azul noche (marca),
+   Profundidad (el degradado, solo en piezas contenidas) y Verde (solo acciones). */
+:root{
+  /* Superficies y texto */
+  --tinta:#0f1424;         /* Tinta: negro con una gota de azul noche */
+  --papel:#f5f4f0;         /* Papel: blanco roto cálido, nunca blanco puro */
+  --bg:#f5f4f0;            /* fondo de página (Papel) */
+  --surface:#fcfbf8;       /* tarjetas y hojas */
+  --ink:#0f1424;           /* titulares y texto fuerte (Tinta) */
+  --ink-2:#474c5c;         /* texto corrido */
+  --ink-3:#6b6f7c;         /* etiquetas grises y pies */
+  --line:rgba(15,20,36,.12);
+  --line-2:rgba(15,20,36,.26);
+
+  /* Marca */
+  --brand:#1c2a6b;         /* Azul noche: logo, superficies de marca, gráficos */
+  --brand-ink:#2c4199;     /* azul para etiquetas y enlaces sobre claro */
+  --jade:#00b27e;          /* Verde: solo acciones (letra azul noche encima) */
+  --jade-ink:#007a56;      /* verde para texto sobre claro */
+  --jade-soft:rgba(0,178,126,.12);
+  --verde-claro:#4fd1a5;   /* verde para texto sobre el degradado */
+
+  /* Fijos (no cambian con el tema) */
+  --abismo:#1c2a6b;        /* superficie oscura de marca = azul noche */
+  --hielo:#b4c3f2;
+  --horizonte:#d6def7;
+  --blanco:#ffffff;
+  --on-sky:#f1f3fa;        /* texto sobre el degradado */
+  --on-sky-2:#cdd5ee;
+
+  /* Botón principal (oscuro) y botón de acción (.btn-club, verde) */
+  --btn:#1c2a6b; --btn-ink:#ffffff; --btn-sweep:#2c4199; --btn-sweep-ink:#ffffff;
+
+  /* Profundidad: único degradado del sistema, con grano fino */
+  --cielo:linear-gradient(140deg,#0d1540 0%,#1c2a6b 50%,#3049a6 100%);
+  --cielo-h:var(--cielo);
+  --grano:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --fondo-pieza:var(--grano),radial-gradient(60% 55% at var(--mx,82%) var(--my,8%),rgba(74,104,214,.38) 0%,rgba(74,104,214,0) 70%),var(--cielo);
+
+  /* Sombra: solo para la pieza elevada de cada pantalla (foto, tarjeta flotante) */
+  --sombra:0 1px 2px rgba(15,20,36,.08),0 18px 36px -18px rgba(28,42,107,.45),0 40px 80px -32px rgba(15,20,36,.45);
+  --sombra-flotante:0 1px 2px rgba(15,20,36,.08),0 16px 32px -12px rgba(15,20,36,.28),0 32px 64px -28px rgba(28,42,107,.35);
+
+  /* Tipografía */
+  --f-sans:'Mona Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'Spline Sans Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+
+  /* Espacio (base 4) y radios */
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:24px;--s-6:32px;
+  --s-7:44px;--s-8:52px;--s-9:72px;--s-10:96px;--s-11:128px;
+  --r-tag:4px; --r:6px; --r-icon:14px;
+
+  /* Movimiento */
+  --ease-out:cubic-bezier(.16,1,.3,1);    /* la curva de la marca: arranque decidido, llegada suave */
+  --ease-io:cubic-bezier(.65,0,.35,1);    /* solo para trazos que se dibujan */
+  --t-micro:160ms; --t-short:280ms; --t-med:640ms; --t-long:1000ms; --t-cine:1400ms;
+  --stagger:60ms;
+
+  color-scheme:light;
+}
+
+/* ── 2. Tokens · modo oscuro (sigue al sistema y respeta la elección manual) ── */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1233; --surface:#111a45; --ink:#eef1fa; --ink-2:#c3c9de; --ink-3:#8f98b9;
+    --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.26);
+    --brand-ink:#9fb2f0; --jade-ink:#34d49e;
+    --btn:#eef1fa; --btn-ink:#0d1540; --btn-sweep:#d6def7; --btn-sweep-ink:#0d1540;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1233; --surface:#111a45; --ink:#eef1fa; --ink-2:#c3c9de; --ink-3:#8f98b9;
+  --line:rgba(255,255,255,.12); --line-2:rgba(255,255,255,.26);
+  --brand-ink:#9fb2f0; --jade-ink:#34d49e;
+  --btn:#eef1fa; --btn-ink:#0d1540; --btn-sweep:#d6def7; --btn-sweep-ink:#0d1540;
+  color-scheme:dark;
+}
+
+/* ── 3. Base ── */
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:16px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;transition:background-color var(--t-short),color var(--t-short)}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--jade);outline-offset:3px;border-radius:2px}
+::selection{background:var(--jade);color:var(--abismo)}
+
+/* ── 4. Tipografía: Mona Sans se estira; el contraste es de ancho, nunca de un trazo fino ── */
+.t-display{font-weight:900;font-stretch:125%;font-size:clamp(40px,6vw,84px);line-height:1;letter-spacing:-.012em;text-wrap:balance;margin:0}
+.destacado{font-stretch:75%;font-weight:600;letter-spacing:0}
+.t-gigante{display:block;font-weight:900;font-stretch:125%;font-size:10.6cqw;line-height:.8;letter-spacing:-.02em;
+  text-transform:uppercase;white-space:nowrap;color:var(--abismo)}
+.t-seccion{font-weight:900;font-stretch:125%;font-size:clamp(30px,4vw,48px);line-height:1.05;letter-spacing:-.01em;text-wrap:balance;margin:0}
+.t-elemento{font-weight:800;font-stretch:110%;font-size:22px;line-height:1.2;margin:0}
+.t-cifra{font-weight:800;font-stretch:125%;font-size:44px;line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.t-entrada{font-size:19px;line-height:1.65;color:var(--ink-2);max-width:52ch;margin:0}
+.t-cuerpo{font-size:16px;line-height:1.7;max-width:64ch;margin:0}
+.t-apoyo{font-size:14px;line-height:1.6;color:var(--ink-2);margin:0}
+.t-etiqueta{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-ink);margin:0}
+.t-micro{font-size:12.5px;font-weight:500;color:var(--ink-3)}
+.marca-palabra{font-weight:800;font-stretch:125%;text-transform:uppercase;letter-spacing:.02em}
+
+/* ── 5. Componentes ── */
+/* Botones: radio 6px, nunca píldora. El hover es un barrido de color de izquierda a derecha. */
+.btn{position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);
+  font:600 14.5px/1 var(--f-sans);padding:15px 24px;border-radius:var(--r);border:1px solid transparent;text-decoration:none;cursor:pointer;
+  transition:color var(--t-short) var(--ease-out),border-color var(--t-short) var(--ease-out),transform 450ms var(--ease-out)}
+.btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--sweep,transparent);transform:scaleX(0);transform-origin:right;
+  transition:transform var(--t-med) var(--ease-out)}
+.btn:hover::before{transform:scaleX(1);transform-origin:left}
+.btn .flecha{display:inline-block;transition:transform var(--t-short) var(--ease-out)}
+.btn:hover .flecha{transform:translateX(4px)}
+.btn-primario{background:var(--btn);color:var(--btn-ink);--sweep:var(--btn-sweep)}
+.btn-primario:hover{color:var(--btn-sweep-ink)}
+.btn-secundario{border-color:var(--line-2);color:var(--ink);--sweep:var(--ink)}
+.btn-secundario:hover{color:var(--bg);border-color:var(--ink)}
+.btn-club{background:var(--jade);color:var(--abismo);--sweep:#5ee8ae}
+.btn-chico{padding:11px 18px;font-size:13.5px}
+/* Sobre el cielo */
+.sobre-cielo .btn-primario{background:var(--blanco);color:var(--abismo);--sweep:var(--horizonte)}
+.sobre-cielo .btn-primario:hover{color:var(--abismo)}
+.sobre-cielo .btn-secundario{border-color:rgba(255,255,255,.45);color:var(--blanco);--sweep:var(--blanco)}
+.sobre-cielo .btn-secundario:hover{color:var(--abismo);border-color:var(--blanco)}
+
+/* Enlace: el subrayado se dibuja al entrar y se retira hacia la derecha al salir */
+.enlace{color:var(--brand-ink);font-weight:600;text-decoration:none;
+  background:linear-gradient(currentColor,currentColor) 100% 100%/0 1px no-repeat;padding-bottom:2px;
+  transition:background-size var(--t-short) var(--ease-out)}
+.enlace:hover{background-position:0 100%;background-size:100% 1px}
+
+/* Etiqueta de estado vivo: única cosa que late */
+.vivo{display:inline-flex;align-items:center;gap:var(--s-2);font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--jade-ink);background:var(--jade-soft);padding:7px 10px;border-radius:var(--r-tag)}
+.vivo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--jade)}
+.sobre-cielo .vivo,.sobre-abismo .vivo{color:#3fe3a2;background:rgba(34,214,140,.14)}
+
+/* Navegación con indicador que se desliza */
+.nav{display:flex;align-items:center;gap:var(--s-6);padding:var(--s-4) var(--s-6)}
+.nav-links{position:relative;display:flex;gap:var(--s-5);margin-left:auto;font-size:14px;font-weight:500}
+.nav-links a{color:inherit;text-decoration:none;opacity:.78;transition:opacity var(--t-micro)}
+.nav-links a:hover,.nav-links a[aria-current]{opacity:1}
+.nav-ind{position:absolute;bottom:-6px;left:var(--x,0);width:var(--w,0);height:1px;background:currentColor;
+  transition:left 420ms var(--ease-out),width 420ms var(--ease-out),opacity var(--t-short);opacity:var(--o,0)}
+
+/* Filas (reemplazan al mosaico de tarjetas): la línea superior se tiñe y el título avanza */
+.fila{position:relative;display:grid;grid-template-columns:140px 1fr auto;gap:var(--s-5);align-items:baseline;padding:var(--s-5) 0;
+  border-top:1px solid var(--line);color:inherit;text-decoration:none}
+.fila::before{content:"";position:absolute;top:-1px;left:0;right:0;height:1px;background:var(--brand);transform:scaleX(0);transform-origin:left;
+  transition:transform var(--t-med) var(--ease-out)}
+.fila:hover::before{transform:scaleX(1)}
+.fila .t-elemento{transition:transform var(--t-short) var(--ease-out)}
+.fila:hover .t-elemento{transform:translateX(6px)}
+.fila .flecha{opacity:0;transform:translateX(-8px);transition:opacity var(--t-short),transform var(--t-short) var(--ease-out);color:var(--brand-ink)}
+.fila:hover .flecha{opacity:1;transform:none}
+
+/* Datos: rejilla con líneas verticales, nunca tarjetas. Cada cifra con su línea de contexto. */
+.datos{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.datos>div{padding:var(--s-5) var(--s-5) var(--s-5) 0}
+.datos>div+div{padding-left:var(--s-5);border-left:1px solid var(--line)}
+
+/* El cielo: banda a sangre, oscuro arriba y claro abajo. Sigue al cursor (--mx/--my desde movimiento.js) */
+.cielo{position:relative;overflow:hidden;color:var(--on-sky);container-type:inline-size;
+  background:radial-gradient(70% 55% at var(--mx,25%) var(--my,30%),rgba(0,51,204,.5) 0%,rgba(0,51,204,0) 70%),var(--cielo);
+  background-size:100% 100%,100% 110%;background-position:0 0,0 0}
+
+/* Cinta de temas */
+.cinta{overflow:hidden;background:var(--abismo);color:var(--on-sky);padding:var(--s-5) 0}
+.cinta-pista{display:flex;width:max-content;align-items:center;white-space:nowrap;font-weight:800;font-stretch:125%;font-size:36px;line-height:1;text-transform:uppercase}
+.cinta-pista>*{margin-right:var(--s-6)}
+.cinta-pista .sep{color:var(--jade);font-size:16px}
+.cinta-pista .fina{font-stretch:75%;font-weight:600}
+
+/* ── 6. Movimiento ──
+   Todo lo que se mueve vive aquí abajo. Reglas:
+   · html.mov la pone movimiento.js solo si la persona NO pidió reducir movimiento.
+     Sin JS, o con movimiento reducido, todo queda quieto y visible.
+   · Solo se animan transform, opacity, clip-path, el ancho de la letra y trazos SVG. */
+
+/* Aparición al hacer scroll */
+html.mov [data-rv]{opacity:0;transform:translateY(18px);
+  transition:opacity var(--t-med) var(--ease-out),transform var(--t-med) var(--ease-out);transition-delay:calc(var(--i,0) * var(--stagger))}
+html.mov [data-rv].in{opacity:1;transform:none}
+
+/* Titular palabra por palabra (máscara) + el destacado se ajusta de ancho a estrecho */
+html.mov [data-titular] .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.16em 0 .1em;margin:-.16em 0 -.1em}
+html.mov [data-titular] .w>span{display:inline-block;transform:translateY(110%);
+  transition:transform var(--t-long) var(--ease-out);transition-delay:calc(var(--i,0) * 45ms)}
+html.mov [data-titular].in .w>span{transform:none}
+html.mov [data-titular].in .destacado{animation:ajuste var(--t-cine) var(--ease-out) both;animation-delay:calc(var(--n,6) * 45ms + 250ms)}
+@keyframes ajuste{from{font-stretch:125%;font-weight:900}to{font-stretch:75%;font-weight:600}}
+
+/* Línea que se dibuja */
+html.mov [data-linea]{transform:scaleX(0);transform-origin:left;transition:transform var(--t-long) var(--ease-out);transition-delay:calc(var(--i,0) * var(--stagger))}
+html.mov [data-linea].in{transform:none}
+
+/* Isotipo que se dibuja: los trazos llevan class="trazo" pathLength="1"; el punto, class="senal" */
+html.mov [data-dibujo] .trazo{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset var(--t-cine) var(--ease-io)}
+html.mov [data-dibujo] .trazo+.trazo{transition-delay:.35s}
+html.mov [data-dibujo] .senal{transform:scale(0);transform-box:fill-box;transform-origin:center;transition:transform 700ms var(--ease-out) 1.15s}
+html.mov [data-dibujo].in .trazo{stroke-dashoffset:0}
+html.mov [data-dibujo].in .senal{transform:scale(1)}
+
+/* Imagen que se revela con máscara (de abajo hacia arriba) y se asienta.
+   La máscara va en los hijos: si recortara al propio elemento, el navegador
+   no detectaría que entró en pantalla y nunca se revelaría. */
+html.mov [data-mascara]>*{clip-path:inset(100% 0 0 0);transform:scale(1.08);
+  transition:clip-path 1200ms var(--ease-out),transform 1600ms var(--ease-out)}
+html.mov [data-mascara].in>*{clip-path:inset(0 0 0 0);transform:none}
+
+/* Palabra gigante: letras que suben; lente de ancho cerca del cursor; deslizamiento con el scroll */
+.t-gigante{transform:translateX(var(--gx,0px))}
+.t-gigante .l{display:inline-block;transition:font-stretch 450ms var(--ease-out)}
+html.mov .t-gigante[data-rv]{opacity:1;transform:translateX(var(--gx,0px))}
+html.mov .t-gigante .l{transform:translateY(60%);opacity:0;
+  transition:transform var(--t-long) var(--ease-out),opacity 800ms var(--ease-out),font-stretch 450ms var(--ease-out);
+  transition-delay:calc(var(--i,0) * 55ms),calc(var(--i,0) * 55ms),0s}
+html.mov .t-gigante.in .l{transform:none;opacity:1}
+
+/* Ambiente: máximo dos cosas en movimiento continuo por pantalla */
+@media (prefers-reduced-motion:no-preference){
+  .cielo{animation:horizonte 14s ease-in-out infinite alternate}
+  .cinta-pista{animation:cinta 42s linear infinite}
+  .cinta:hover .cinta-pista{animation-play-state:paused}
+  .vivo::before{animation:latido 2.6s ease-in-out infinite}
+  .pausa,.pausa *{animation-play-state:paused !important}
+  /* Transición entre páginas (sitios de varias páginas; navegadores que la soportan) */
+  @view-transition{navigation:auto}
+  ::view-transition-old(root){animation:vt-sale 220ms var(--ease-io) both}
+  ::view-transition-new(root){animation:vt-entra 520ms var(--ease-out) both}
+}
+@keyframes horizonte{to{background-position:0 0,0 100%}}
+@keyframes cinta{to{transform:translateX(-50%)}}
+@keyframes latido{50%{opacity:.35}}
+@keyframes vt-sale{to{opacity:0}}
+@keyframes vt-entra{from{opacity:0;transform:translateY(12px)}}
+
+/* Con movimiento reducido: nada se desplaza, nada late */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms !important;animation:none !important}
+}
+
+/* ── 7. Responsive ── */
+@media (max-width:760px){
+  .cielo{background-size:100% 100%,100% 140%}   /* el horizonte baja para que los botones queden sobre azul */
+  .datos{grid-template-columns:1fr}
+  .datos>div+div{border-left:0;padding-left:0;border-top:1px solid var(--line)}
+  .fila{grid-template-columns:1fr;gap:var(--s-1)}
+  .nav{padding:var(--s-4) 20px}
+  .nav-links{display:none}
+  .cinta-pista{font-size:28px}
+}
+
+/* ── 8. Ajuste Profundidad (oct 2026): uso de la letra, botones y piezas ──
+   La letra ancha (125%) queda para el titular principal y los nombres (MODO FUTURO, El Club, LYTH).
+   Los títulos de sección van en ancho normal. Las etiquetas usan la letra principal. */
+.t-seccion{font-weight:800;font-stretch:100%;letter-spacing:-.025em;font-size:clamp(32px,3.6vw,50px);line-height:1.08}
+.t-elemento{font-stretch:100%;letter-spacing:-.01em}
+.t-etiqueta{font-family:var(--f-sans);font-size:14px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--brand-ink)}
+.vivo{font:600 13.5px/1 var(--f-sans);letter-spacing:0;text-transform:none;padding:8px 12px}
+.sobre-cielo .vivo,.sobre-abismo .vivo{color:var(--verde-claro);background:rgba(0,178,126,.16)}
+/* El destacado del titular: estrecho, en azul noche y a la misma altura óptica */
+.t-display .destacado{color:var(--brand);font-weight:700;font-size:1.1em;line-height:.9}
+[data-theme="dark"] .t-display .destacado{color:#9fb2f0}
+@keyframes ajuste{from{font-stretch:125%;font-weight:900}to{font-stretch:75%;font-weight:700}}
+/* Botones: un solo verde por pantalla, con letra azul noche */
+.btn{font-size:15.5px;padding:17px 26px}
+.btn-chico{font-size:14px;padding:12px 18px}
+.btn-club{background:var(--jade);color:#1c2a6b;--sweep:var(--verde-claro)}
+.btn-club:hover{color:#1c2a6b}
+/* Pedido de Jonatan: botones de acción con el degradado azul en vez de verde */
+.btn-club{background:var(--grano),linear-gradient(140deg,#0d1540 0%,#1c2a6b 50%,#3049a6 100%);background-size:180px 180px,100% 100%;color:#fff;--sweep:linear-gradient(140deg,#1c2a6b 0%,#3049a6 60%,#4a68d6 100%)}
+.btn-club:hover{color:#fff}
+.sobre-cielo .btn-secundario:hover,.sobre-abismo .btn-secundario:hover{color:#1c2a6b}
+::selection{background:var(--jade);color:#1c2a6b}
+:focus-visible{outline-color:var(--jade)}
+/* Profundidad: el degradado vive en piezas contenidas (tarjetas), nunca en bandas a sangre */
+.cielo{background:var(--fondo-pieza);background-size:180px 180px,100% 100%,100% 118%;background-position:0 0,0 0,0 0;
+  color:var(--on-sky);border:0;border-radius:var(--r)}
+@media (prefers-reduced-motion:no-preference){ .cielo{animation:profundidad 18s ease-in-out infinite alternate} }
+@keyframes profundidad{to{background-position:0 0,0 0,0 100%}}
+.elevada{box-shadow:var(--sombra)}
+/* En los títulos de sección no hay letra estrecha: el destacado solo vive en el titular principal */
+.t-seccion .destacado{font-stretch:inherit;font-weight:inherit;font-size:inherit;letter-spacing:inherit;color:inherit;animation:none!important}
+
+/* Registro Estudio con hero de Escenario: titular gigante a todo el ancho, demo elevada a la derecha, tablero Profundidad con la ruta de 6 pasos; debajo, índice fijo a la izquierda y pasos en dos columnas (explicación | acción). */
+:root{--code-bg:#eeede7;--code-ink:#0f1424;--burbuja:#efeee9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--code-bg:#0d1540;--code-ink:#eef1fa;--burbuja:#16205a}}
+:root[data-theme="dark"]{--code-bg:#0d1540;--code-ink:#eef1fa;--burbuja:#16205a}
+
+body{background:var(--bg);color:var(--ink);font-size:17px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.envoltura{max-width:1280px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+b{font-weight:650;color:var(--ink)}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Cabecera */
+.cab{border-bottom:1px solid var(--line)}
+.cab-fila{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.firma{display:inline-flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none}
+.firma .marca-palabra{font-size:15px}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;padding-block:72px 56px}
+.hero-titulo{display:grid;gap:20px;min-width:0}
+.titular{font-size:clamp(24px,6.7vw,96px);line-height:1.04;letter-spacing:-.025em}
+.titular .ln{display:block;white-space:nowrap}
+.titular .destacado{font-size:1em;line-height:.9}
+.hero-txt{display:grid;gap:28px;align-content:start;min-width:0}
+.hero .t-entrada{max-width:46ch;font-size:clamp(18px,1.6vw,22px)}
+.so{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.so-txt{font-size:15px;font-weight:600;color:var(--ink-2)}
+.so-btns{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r);padding:3px;gap:3px}
+.so-btns button{font:600 15px/1 var(--f-sans);color:var(--ink-2);background:transparent;border:0;border-radius:4px;padding:11px 20px;cursor:pointer;
+  transition:background-color var(--t-short) var(--ease-out),color var(--t-short) var(--ease-out)}
+.so-btns button[aria-pressed="true"]{background:var(--btn);color:var(--btn-ink)}
+.so-btns button:not([aria-pressed="true"]):hover{color:var(--ink)}
+html[data-so="win"] [data-solo="mac"],html[data-so="mac"] [data-solo="win"]{display:none!important}
+.hero-accion{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
+.sellos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px}
+.sellos li{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--ink-2)}
+.sellos .ico{color:var(--brand-ink);width:18px;height:18px}
+
+/* Demo elevada (la única pieza con sombra) */
+.demo{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;align-self:start;min-width:0}
+.demo-cab{display:flex;align-items:center;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.punto{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.demo-tit{margin-left:10px;font-size:13.5px;font-weight:600;color:var(--ink-3)}
+.demo-cuerpo{display:grid;gap:14px;padding:22px}
+.burbuja{display:grid;gap:6px;padding:14px 16px;border-radius:var(--r);max-width:92%}
+.burbuja p{margin:0;font-size:16px;line-height:1.55;color:var(--ink)}
+.quien{font-size:13px;font-weight:600;color:var(--ink-3)}
+.burbuja.tu{justify-self:end;background:var(--burbuja)}
+.burbuja.claude{justify-self:start;border:1px solid var(--line)}
+.pasito{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--jade-ink)}
+.pasito .ico{width:16px;height:16px}
+.cuenta{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-top:6px;padding-top:12px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:16px}
+.cuenta .sep{color:var(--ink-3)}
+.cuenta .res{font-weight:900;font-stretch:125%;font-size:30px;line-height:1;color:var(--brand)}
+.demo figcaption{padding:0 22px 18px}
+@media (prefers-reduced-motion:no-preference){
+  .demo .pasito{animation:llega 700ms var(--ease-out) 1.5s both}
+  .demo .claude{animation:llega 800ms var(--ease-out) 2.3s both}
+}
+@keyframes llega{from{opacity:0;transform:translateY(10px)}}
+
+/* Tablero Profundidad con la ruta */
+.tablero{padding:32px 36px 36px;display:grid;gap:28px}
+.tablero-cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px}
+.tablero-tit{font-size:15px;font-weight:600;color:var(--verde-claro)}
+.tablero-cab b{color:var(--on-sky);font-weight:800;font-stretch:125%;font-size:15px;letter-spacing:.01em}
+.ruta{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:relative}
+.ruta::before{content:"";position:absolute;left:calc(100%/12);right:calc(100%/12);top:28px;border-top:2px dashed rgba(79,209,165,.55)}
+.ruta a{position:relative;display:grid;justify-items:center;gap:10px;text-align:center;color:var(--on-sky);text-decoration:none;padding-inline:6px}
+.nodo{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:#16215a;border:1.5px solid rgba(205,213,238,.4);color:var(--verde-claro);
+  transition:background-color var(--t-short) var(--ease-out),color var(--t-short) var(--ease-out),transform var(--t-short) var(--ease-out)}
+.nodo .ico{width:24px;height:24px}
+.ruta a:hover .nodo{background:var(--jade);color:#1c2a6b;border-color:var(--jade);transform:translateY(-3px)}
+.ruta .n{font-size:13px;font-weight:600;color:var(--on-sky-2);font-variant-numeric:tabular-nums}
+.ruta .et{font-size:16px;font-weight:700;line-height:1.25}
+
+/* Barra de progreso del celular */
+.barra-movil{display:none}
+
+/* Cuerpo: índice + contenido */
+.cuerpo{display:grid;grid-template-columns:minmax(0,1fr);gap:56px;padding-block:72px 0}
+.indice{display:none}
+.contenido{min-width:0}
+
+/* Antes de empezar */
+.antes{display:grid;gap:24px;padding-bottom:8px}
+.requisitos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.requisitos li{display:grid;gap:10px;align-content:start;padding:22px 24px 4px 0}
+.requisitos li+li{padding-left:24px;border-left:1px solid var(--line)}
+.requisitos .ico{width:26px;height:26px;color:var(--brand-ink)}
+.requisitos li>div{display:grid;gap:4px}
+.requisitos b{font-size:18px}
+.requisitos span{color:var(--ink-2);font-size:15.5px;line-height:1.55}
+
+.en-linea{font:500 .9em var(--f-mono);background:var(--code-bg);color:var(--code-ink);padding:2px 6px;border-radius:4px;white-space:nowrap}
+
+/* Pasos */
+.pasos{list-style:none;margin:56px 0 0;padding:0}
+.paso{display:grid;gap:28px;padding-block:64px;border-top:1px solid var(--line);scroll-margin-top:24px}
+.paso-cab{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;align-items:start}
+.paso-cab>div{display:grid;gap:10px;min-width:0}
+.num{font-weight:900;font-stretch:125%;font-size:88px;line-height:.82;color:var(--brand);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.paso .t-seccion{font-size:clamp(28px,3vw,46px)}
+.paso-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;margin-left:144px}
+.col-texto,.col-accion{display:grid;gap:18px;align-content:start;min-width:0}
+.col-accion .btn{justify-self:start}
+.t-cuerpo{color:var(--ink-2);font-size:17px}
+.t-apoyo{font-size:15.5px}
+.lista{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.lista li{position:relative;padding-left:22px;color:var(--ink-2);line-height:1.65}
+.lista li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--jade)}
+.mini-pasos{margin:0;padding:0;list-style:none;display:grid;gap:14px;counter-reset:mp}
+.mini-pasos li{counter-increment:mp;position:relative;padding-left:40px;color:var(--ink-2);line-height:1.6}
+.mini-pasos li::before{content:counter(mp);position:absolute;left:0;top:0;width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--line-2);border-radius:4px;
+  font-size:13.5px;font-weight:700;color:var(--brand-ink);font-variant-numeric:tabular-nums}
+.resultado{margin:0;display:flex;gap:12px;align-items:flex-start;font-size:15.5px;line-height:1.6;color:var(--ink-2)}
+.resultado .ico{width:24px;height:24px;padding:4px;border-radius:50%;background:var(--jade-soft);color:var(--jade-ink);stroke-width:2.4;margin-top:1px}
+.resultado b{color:var(--jade-ink)}
+
+.ficha{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:20px;display:grid;gap:14px}
+.ficha-tit{font-size:14px;font-weight:600;color:var(--ink-3)}
+.renglon{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line-2);border-radius:var(--r-tag);font-size:14.5px;font-weight:600;color:var(--ink)}
+.chip .ico{width:17px;height:17px;color:var(--brand-ink)}
+
+/* Mensajes para Claude */
+.msg{border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);padding:22px;display:grid;gap:14px;justify-items:start;min-width:0}
+.msg-lbl{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--brand-ink)}
+.msg-lbl .ico{width:18px;height:18px}
+.msg p{margin:0;font-size:17px;line-height:1.6;color:var(--ink);overflow-wrap:anywhere}
+.msg-clave{border:1.5px solid var(--brand)}
+.msg-clave p{font-size:18px}
+.btn .ico{width:18px;height:18px}
+.copiado{color:var(--jade-ink)!important}
+
+/* Bloques finales */
+.bloque{display:grid;gap:22px;padding-block:72px 0;border-top:1px solid var(--line);scroll-margin-top:24px}
+.bloque+.bloque{margin-top:72px}
+.ejemplos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.nota{display:flex;gap:10px;align-items:flex-start;color:var(--ink-3)}
+.nota .ico{width:18px;height:18px;margin-top:3px}
+.fallas{display:grid}
+.falla{display:grid;grid-template-columns:28px minmax(0,1fr);gap:16px;padding-block:24px;border-top:1px solid var(--line)}
+.falla:first-child{border-top:0;padding-top:4px}
+.falla>div{display:grid;gap:12px;min-width:0}
+.ico-falla{width:24px;height:24px;color:var(--brand-ink);margin-top:2px}
+.falla .t-elemento{font-size:20px}
+
+.cierre{margin-block:96px 80px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;padding:40px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.cierre>div{display:grid;gap:10px;max-width:46ch}
+.cierre .t-seccion{font-size:clamp(26px,3vw,38px)}
+
+.pie{border-top:1px solid var(--line)}
+.pie-fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;padding-block:28px}
+.pie .marca-palabra{font-size:14px}
+
+/* Computadora: aprovechar el ancho */
+@media (min-width:1040px){
+  .hero{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);column-gap:64px;row-gap:44px;padding-block:88px 64px}
+  .hero-titulo{grid-column:1 / -1}
+  .cuerpo{grid-template-columns:232px minmax(0,1fr);gap:72px}
+  .indice{display:grid;gap:18px;align-content:start;position:sticky;top:32px;align-self:start;padding-top:4px}
+  .indice ol{list-style:none;margin:0;padding:0;display:grid;border-left:1px solid var(--line)}
+  .indice a{display:flex;align-items:center;gap:12px;padding:11px 0 11px 16px;margin-left:-1px;border-left:2px solid transparent;color:var(--ink-3);text-decoration:none;font-size:15.5px;font-weight:600;
+    transition:color var(--t-short) var(--ease-out),border-color var(--t-short) var(--ease-out)}
+  .indice a .ico{width:18px;height:18px}
+  .indice a:hover{color:var(--ink)}
+  .indice a.activo{color:var(--ink);border-left-color:var(--brand)}
+  .indice a.activo .ico{color:var(--brand-ink)}
+  .indice .indice-extra{border-left:0;padding-left:0;margin-left:0;color:var(--brand-ink);font-size:14.5px}
+}
+@media (min-width:1200px){
+  .paso-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px}
+}
+
+/* Tableta y celular */
+@media (max-width:1039px){
+  .demo{max-width:620px}
+  .barra-movil{display:grid;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+    padding:12px max(20px,env(safe-area-inset-right,0px)) 12px max(20px,env(safe-area-inset-left,0px))}
+  .bm-txt{font-size:14.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bm-txt b{color:var(--ink)}
+  .bm-pista{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+  .bm-relleno{display:block;height:100%;width:0;background:var(--jade);transition:width var(--t-med) var(--ease-out)}
+  .paso,.bloque{scroll-margin-top:72px}
+}
+@media (max-width:760px){
+  html.mov [data-titular].in .destacado{animation:none}
+  .paso-grid{margin-left:0}
+  .paso-cab{grid-template-columns:minmax(0,1fr);gap:12px}
+  .num{font-size:56px}
+  .requisitos{grid-template-columns:minmax(0,1fr)}
+  .requisitos li,.requisitos li+li{padding:18px 0;border-left:0;border-top:1px solid var(--line)}
+  .requisitos li:first-child{border-top:0}
+  .ruta{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:24px}
+  .ruta::before{display:none}
+  .ejemplos{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .hero{padding-block:44px 40px;gap:32px}
+  .tablero{padding:24px 16px 28px}
+  .nodo{width:48px;height:48px}
+  .ruta .et{font-size:14.5px}
+  .paso{padding-block:44px;gap:20px}
+  .msg{padding:18px}
+  .msg .btn,.col-accion .btn,.cierre .btn,.hero-accion .btn{width:100%;justify-self:stretch}
+  .demo-cuerpo{padding:18px}
+  .cierre{padding:24px 18px;margin-block:72px 48px}
+  .pie-fila{flex-direction:column;align-items:flex-start}
+}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-descarga" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></symbol>
+    <symbol id="i-pestana" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9h18M7.5 13.5l2 1.75-2 1.75M12 17h4"/></symbol>
+    <symbol id="i-equipo" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="10.5" rx="1.5"/><path d="M2.5 19h19M9 12l1.5-2 1.5 1.5 2.5-3"/></symbol>
+    <symbol id="i-conectar" viewBox="0 0 24 24"><path d="M9 3v4M15 3v4M7 7h10v4a5 5 0 0 1-10 0V7zM12 16v5"/></symbol>
+    <symbol id="i-reiniciar" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.35-5.66M20 4v4.5h-4.5"/></symbol>
+    <symbol id="i-lupa" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5.5 5.5M8 10.5h5M10.5 8v5"/></symbol>
+    <symbol id="i-copiar" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="1.5"/><path d="M15.5 8.5V5.5A1.5 1.5 0 0 0 14 4H5.5A1.5 1.5 0 0 0 4 5.5V14a1.5 1.5 0 0 0 1.5 1.5h3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9.5a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 15V5.5z"/></symbol>
+    <symbol id="i-alerta" viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4L12 4zM12 10v4.5M12 17.2v.3"/></symbol>
+    <symbol id="i-reloj" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-tarjeta" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="M3 10h18M7 15h3"/></symbol>
+    <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 3.5 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-2.5z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-codigo" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5.5l-3 13"/></symbol>
+    <symbol id="i-carpeta" viewBox="0 0 24 24"><path d="M3.5 7A1.5 1.5 0 0 1 5 5.5h4l2 2.5h8A1.5 1.5 0 0 1 20.5 9.5v8A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5V7z"/></symbol>
+    <symbol id="i-flecha" viewBox="0 0 24 24"><path d="M5 12h14m0 0-5.5-5.5M19 12l-5.5 5.5"/></symbol>
+  </defs>
+</svg>
+
+<header class="cab">
+  <div class="envoltura cab-fila">
+    <a class="firma" href="https://jonatancorrea.com" aria-label="Jonatan Correa">
+      <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" data-dibujo>
+        <path class="trazo" pathLength="1" d="M52.7 30.4A21 21 0 1 1 35.6 13.3" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+        <path class="trazo" pathLength="1" d="M36 21V36A7 7 0 0 1 22 36" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+        <circle class="senal" cx="46.8" cy="19.2" r="4.4" fill="#00B27E"/>
+      </svg>
+      <span class="marca-palabra">Jonatan Correa</span>
+    </a>
+    <span class="vivo">Manual simplificado · REA</span>
+  </div>
+</header>
+
+<section class="hero envoltura">
+  <div class="hero-titulo">
+    <span class="t-etiqueta">Manual simplificado · REA en Claude Code</span>
+    <h1 class="t-display titular" data-titular>
+      <span class="ln">Escanea cualquier app</span>
+      <span class="ln">y crea tu propia versión</span>
+      <span class="ln"><span class="destacado">con REA en Claude Code</span></span>
+    </h1>
+  </div>
+  <div class="hero-txt">
+    <p class="t-entrada">REA le da a Claude Code el poder de abrir una app, un juego o una web y mostrarte cómo funciona por dentro, para que lo entiendas o lo recrees, y aquí lo instalas en 6 pasos solo pegando mensajes en el chat.</p>
+
+    <div class="so" role="group" aria-label="Elige tu sistema">
+      <span class="so-txt">Tu computadora es</span>
+      <div class="so-btns">
+        <button type="button" id="so-win" data-so-btn="win" aria-pressed="true">Windows</button>
+        <button type="button" id="so-mac" data-so-btn="mac" aria-pressed="false">Mac</button>
+      </div>
+    </div>
+
+    <div class="hero-accion">
+      <a class="btn btn-club" href="#paso-1" data-iman>Empezar por el paso 1 <span class="flecha">→</span></a>
+      <ul class="sellos">
+        <li><svg class="ico"><use href="#i-reloj"/></svg>Unos 15 minutos</li>
+        <li><svg class="ico"><use href="#i-codigo"/></svg>Sin escribir código</li>
+      </ul>
+    </div>
+  </div>
+
+  <figure class="demo elevada" aria-label="Ejemplo de lo que hace REA">
+    <div class="demo-cab">
+      <span class="punto"></span><span class="punto"></span><span class="punto"></span>
+      <span class="demo-tit">Claude Code · con REA</span>
+    </div>
+    <div class="demo-cuerpo">
+      <div class="burbuja tu">
+        <span class="quien">Tú</span>
+        <p>Usa REA para revisar la Calculadora de Windows. ¿Por qué 200 + 10% da 220?</p>
+      </div>
+      <div class="pasito"><svg class="ico"><use href="#i-lupa"/></svg>Revisando el código del botón %</div>
+      <div class="burbuja claude">
+        <span class="quien">Claude</span>
+        <p>Después del <b>+</b>, el botón <b>%</b> calcula un porcentaje del primer número.</p>
+        <div class="cuenta">
+          <span>10% de 200 = <b>20</b></span>
+          <span class="sep">→</span>
+          <span>200 + 20 = <b class="res">220</b></span>
+        </div>
+      </div>
+    </div>
+    <figcaption class="t-micro">Ejemplo real de la web oficial de REA</figcaption>
+  </figure>
+</section>
+
+<section class="envoltura">
+  <nav class="cielo sobre-cielo tablero" aria-label="El recorrido completo">
+    <div class="tablero-cab">
+      <span class="tablero-tit">El recorrido completo</span>
+      <b>6 pasos · cero código</b>
+    </div>
+    <ol class="ruta">
+      <li><a href="#paso-1"><span class="nodo"><svg class="ico"><use href="#i-descarga"/></svg></span><span class="n">01</span><span class="et">Instala Claude</span></a></li>
+      <li><a href="#paso-2"><span class="nodo"><svg class="ico"><use href="#i-pestana"/></svg></span><span class="n">02</span><span class="et">Abre Code</span></a></li>
+      <li><a href="#paso-3"><span class="nodo"><svg class="ico"><use href="#i-equipo"/></svg></span><span class="n">03</span><span class="et">Prepara tu equipo</span></a></li>
+      <li><a href="#paso-4"><span class="nodo"><svg class="ico"><use href="#i-conectar"/></svg></span><span class="n">04</span><span class="et">Instala REA</span></a></li>
+      <li><a href="#paso-5"><span class="nodo"><svg class="ico"><use href="#i-reiniciar"/></svg></span><span class="n">05</span><span class="et">Reinicia</span></a></li>
+      <li><a href="#paso-6"><span class="nodo"><svg class="ico"><use href="#i-lupa"/></svg></span><span class="n">06</span><span class="et">Primera prueba</span></a></li>
+    </ol>
+  </nav>
+</section>
+
+<div class="barra-movil" aria-hidden="true">
+  <span class="bm-txt"><b id="bm-num">Paso 1 de 6</b> · <span id="bm-nom">Instala Claude</span></span>
+  <span class="bm-pista"><span class="bm-relleno" id="bm-relleno"></span></span>
+</div>
+
+<div class="envoltura cuerpo">
+  <aside class="indice" aria-label="Tu recorrido">
+    <span class="t-etiqueta">Tu recorrido</span>
+    <ol>
+      <li><a href="#paso-1" data-ind="paso-1"><svg class="ico"><use href="#i-descarga"/></svg>Instala Claude</a></li>
+      <li><a href="#paso-2" data-ind="paso-2"><svg class="ico"><use href="#i-pestana"/></svg>Abre la pestaña Code</a></li>
+      <li><a href="#paso-3" data-ind="paso-3"><svg class="ico"><use href="#i-equipo"/></svg>Prepara tu equipo</a></li>
+      <li><a href="#paso-4" data-ind="paso-4"><svg class="ico"><use href="#i-conectar"/></svg>Instala REA</a></li>
+      <li><a href="#paso-5" data-ind="paso-5"><svg class="ico"><use href="#i-reiniciar"/></svg>Reinicia y comprueba</a></li>
+      <li><a href="#paso-6" data-ind="paso-6"><svg class="ico"><use href="#i-lupa"/></svg>Primera prueba</a></li>
+    </ol>
+    <a class="indice-extra" href="#fallas"><svg class="ico"><use href="#i-alerta"/></svg>¿Algo no funcionó?</a>
+  </aside>
+
+  <main class="contenido">
+    <section class="antes" aria-labelledby="t-antes">
+      <h2 class="t-elemento" id="t-antes">¿Qué necesitas antes de empezar?</h2>
+      <ul class="requisitos">
+        <li><svg class="ico"><use href="#i-tarjeta"/></svg><div><b>Plan de pago de Claude</b><span>Pro o superior, porque la pestaña Code no está en el plan gratis.</span></div></li>
+        <li><svg class="ico"><use href="#i-equipo"/></svg><div><b>Windows o Mac</b><span>Con conexión a internet.</span></div></li>
+        <li><svg class="ico"><use href="#i-escudo"/></svg><div><b>Tú tienes el control</b><span>Claude te pide permiso antes de cada cambio, y tú solo lo apruebas.</span></div></li>
+      </ul>
+    </section>
+
+    <ol class="pasos">
+      <li class="paso" id="paso-1" data-nom="Instala Claude">
+        <div class="paso-cab">
+          <span class="num" aria-hidden="true">01</span>
+          <div>
+            <span class="t-etiqueta">Paso 1 de 6 · si ya tienes Claude instalado, sáltalo</span>
+            <h2 class="t-seccion">Instala Claude en tu computadora</h2>
+          </div>
+        </div>
+        <div class="paso-grid">
+          <div class="col-texto">
+            <p class="t-cuerpo" data-solo="win">Descarga el instalador para Windows, ábrelo como cualquier programa y, al terminar, busca <b>Claude</b> en el menú Inicio e inicia sesión con tu cuenta.</p>
+            <p class="t-cuerpo" data-solo="mac">Descarga el instalador para Mac, ábrelo, arrastra Claude a la carpeta Aplicaciones y, al terminar, ábrelo desde Aplicaciones e inicia sesión con tu cuenta.</p>
+          </div>
+          <div class="col-accion">
+            <a class="btn btn-primario" data-solo="win" href="https://claude.ai/api/desktop/win32/x64/setup/latest/redirect" target="_blank" rel="noopener"><svg class="ico"><use href="#i-descarga"/></svg>Descargar para Windows</a>
+            <a class="btn btn-primario" data-solo="mac" href="https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect" target="_blank" rel="noopener"><svg class="ico"><use href="#i-descarga"/></svg>Descargar para Mac</a>
+            <p class="resultado"><svg class="ico"><use href="#i-check"/></svg><span><b>Qué debe pasar:</b> se abre Claude con tu cuenta y la lista de chats a la izquierda.</span></p>
+          </div>
+        </div>
+      </li>
+
+      <li class="paso" id="paso-2" data-nom="Abre la pestaña Code">
+        <div class="paso-cab">
+          <span class="num" aria-hidden="true">02</span>
+          <div>
+            <span class="t-etiqueta">Paso 2 de 6</span>
+            <h2 class="t-seccion">Abre la pestaña Code y elige una carpeta</h2>
+          </div>
+        </div>
+        <div class="paso-grid">
+          <ol class="mini-pasos col-texto">
+            <li>En la parte de arriba del menú lateral, haz clic en la pestaña <b>Code</b>. Si solo ves íconos, pasa el mouse por encima para ver sus nombres.</li>
+            <li>Debajo del cuadro donde escribes, haz clic en el primer botón y elige la primera opción del grupo <b>Local</b>, para que Claude trabaje en tu computadora.</li>
+            <li>Haz clic en el botón de carpeta que está al lado, elige <b>Open folder…</b> y, en Documentos, crea una carpeta nueva llamada <b>rea</b> y selecciónala.</li>
+            <li>En ese mismo renglón, elige el modo <b>Manual</b>, así Claude te pide permiso antes de cada cambio.</li>
+          </ol>
+          <div class="col-accion">
+            <div class="ficha">
+              <span class="ficha-tit">Así debe quedar el renglón de abajo</span>
+              <div class="renglon">
+                <span class="chip"><svg class="ico"><use href="#i-equipo"/></svg>Local</span>
+                <span class="chip"><svg class="ico"><use href="#i-carpeta"/></svg>rea</span>
+                <span class="chip"><svg class="ico"><use href="#i-escudo"/></svg>Manual</span>
+              </div>
+            </div>
+            <p class="resultado"><svg class="ico"><use href="#i-check"/></svg><span><b>Qué debe pasar:</b> ves el cuadro de chat listo para escribir, con la carpeta rea seleccionada debajo.</span></p>
+          </div>
+        </div>
+      </li>
+
+      <li class="paso" id="paso-3" data-nom="Prepara tu equipo">
+        <div class="paso-cab">
+          <span class="num" aria-hidden="true">03</span>
+          <div>
+            <span class="t-etiqueta">Paso 3 de 6</span>
+            <h2 class="t-seccion">Pídele a Claude que prepare tu computadora</h2>
+          </div>
+        </div>
+        <div class="paso-grid">
+          <div class="col-texto">
+            <p class="t-cuerpo">REA necesita un programa gratuito llamado Node.js, que le permite funcionar en tu computadora, y Claude revisa si ya lo tienes o lo instala por ti.</p>
+            <ul class="lista">
+              <li>Cuando Claude te pida permiso para revisar o instalar, apruébalo.</li>
+              <li data-solo="win">Si Windows te pregunta si quieres permitir que Claude haga cambios en el equipo, haz clic en <b>Sí</b>.</li>
+              <li data-solo="mac">Si Claude te dice que no puede instalarlo solo, descarga el instalador de Mac (el archivo .pkg de la versión LTS) desde <a class="enlace" href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org</a> y ábrelo como cualquier programa.</li>
+            </ul>
+          </div>
+          <div class="col-accion">
+            <div class="msg">
+              <span class="msg-lbl"><svg class="ico"><use href="#i-chat"/></svg>Pégalo en el chat de la pestaña Code</span>
+              <p id="msg-node">Revisa si tengo instalado Node.js en versión 22.19 o más reciente. Si no lo tengo, instálalo por mí y explícame en palabras sencillas si tengo que aceptar algo en pantalla.</p>
+              <button type="button" class="btn btn-secundario btn-chico copiar" data-de="msg-node"><svg class="ico"><use href="#i-copiar"/></svg><span class="lbl">Copiar mensaje</span></button>
+            </div>
+            <p class="resultado"><svg class="ico"><use href="#i-check"/></svg><span><b>Qué debe pasar:</b> Claude te confirma que tienes Node.js y en qué versión. Si lo acaba de instalar, cierra Claude por completo y ábrelo de nuevo antes de seguir (en el paso 5 te digo cómo).</span></p>
+          </div>
+        </div>
+      </li>
+
+      <li class="paso paso-clave" id="paso-4" data-nom="Instala REA">
+        <div class="paso-cab">
+          <span class="num" aria-hidden="true">04</span>
+          <div>
+            <span class="t-etiqueta">Paso 4 de 6 · el paso clave</span>
+            <h2 class="t-seccion">Pídele a Claude que instale REA</h2>
+          </div>
+        </div>
+        <div class="paso-grid">
+          <div class="col-texto">
+            <p class="t-cuerpo">Copia el mensaje, pégalo en el chat de la pestaña Code y envíalo.</p>
+            <ul class="lista">
+              <li>Claude te muestra un plan con lo que va a hacer, léelo y apruébalo. REA guarda una copia de tu configuración antes de cambiar algo.</li>
+              <li>Cada vez que te pida permiso para seguir, apruébalo.</li>
+              <li>Si te ofrece instalar <b>Hopper</b>, dile que no por ahora, es opcional y no lo necesitas para empezar.</li>
+            </ul>
+          </div>
+          <div class="col-accion">
+            <div class="msg msg-clave">
+              <span class="msg-lbl"><svg class="ico"><use href="#i-chat"/></svg>Pégalo en el chat de la pestaña Code</span>
+              <p id="msg-instalar">Instala REA y conéctalo a este agente usando npx rea-agents@latest setup --client claude_code. Muéstrame el plan de instalación en palabras sencillas para que lo apruebe y después verifica que quedó bien instalado. Si estoy en Windows y aparece un error de scripts deshabilitados, usa npx.cmd.</p>
+              <button type="button" class="btn btn-primario btn-chico copiar" data-de="msg-instalar"><svg class="ico"><use href="#i-copiar"/></svg><span class="lbl">Copiar mensaje</span></button>
+            </div>
+            <p class="resultado"><svg class="ico"><use href="#i-check"/></svg><span><b>Qué debe pasar:</b> Claude te avisa que REA quedó instalado y te recuerda reiniciar.</span></p>
+          </div>
+        </div>
+      </li>
+
+      <li class="paso" id="paso-5" data-nom="Reinicia y comprueba">
+        <div class="paso-cab">
+          <span class="num" aria-hidden="true">05</span>
+          <div>
+            <span class="t-etiqueta">Paso 5 de 6</span>
+            <h2 class="t-seccion">Reinicia Claude y comprueba</h2>
+          </div>
+        </div>
+        <div class="paso-grid">
+          <div class="col-texto">
+            <p class="t-cuerpo">REA solo aparece después de cerrar Claude por completo, porque cerrar la ventana no es suficiente.</p>
+            <ol class="mini-pasos">
+              <li data-solo="win">Haz clic derecho en el ícono de Claude junto al reloj de la barra de tareas y elige <b>Salir</b>. Si no lo ves, haz clic en la flechita ^ para ver los íconos ocultos.</li>
+              <li data-solo="mac">Con Claude al frente, presiona <b>Cmd+Q</b>.</li>
+              <li>Abre Claude de nuevo, entra a la pestaña <b>Code</b>, verifica que esté elegida la carpeta <b>rea</b> y envía el mensaje.</li>
+            </ol>
+          </div>
+          <div class="col-accion">
+            <div class="msg">
+              <span class="msg-lbl"><svg class="ico"><use href="#i-chat"/></svg>Pégalo en el chat de la pestaña Code</span>
+              <p id="msg-verificar">Revisa que REA esté conectado y muéstrame qué herramientas de REA puedes usar.</p>
+              <button type="button" class="btn btn-secundario btn-chico copiar" data-de="msg-verificar"><svg class="ico"><use href="#i-copiar"/></svg><span class="lbl">Copiar mensaje</span></button>
+            </div>
+            <p class="resultado"><svg class="ico"><use href="#i-check"/></svg><span><b>Qué debe pasar:</b> Claude te responde con una lista de herramientas de REA. Si las ve, ya quedó instalado.</span></p>
+          </div>
+        </div>
+      </li>
+
+      <li class="paso" id="paso-6" data-nom="Primera prueba">
+        <div class="paso-cab">
+          <span class="num" aria-hidden="true">06</span>
+          <div>
+            <span class="t-etiqueta">Paso 6 de 6</span>
+            <h2 class="t-seccion">Haz tu primera prueba</h2>
+          </div>
+        </div>
+        <div class="paso-grid">
+          <div class="col-texto">
+            <p class="t-cuerpo">REA tiene una app de notas de ejemplo con un botón para exportar, y la idea es que Claude descubra qué hace ese botón por dentro.</p>
+          </div>
+          <div class="col-accion">
+            <div class="msg">
+              <span class="msg-lbl"><svg class="ico"><use href="#i-chat"/></svg>Pégalo en el chat de la pestaña Code</span>
+              <p id="msg-prueba">Descarga https://rea.tools/examples/notes-example.zip en una carpeta nueva y descomprímelo. Usa REA para descubrir qué pasa cuando hago clic en Export notes. Explícamelo en palabras sencillas y dime dónde se guarda notes.csv y qué datos contiene.</p>
+              <button type="button" class="btn btn-secundario btn-chico copiar" data-de="msg-prueba"><svg class="ico"><use href="#i-copiar"/></svg><span class="lbl">Copiar mensaje</span></button>
+            </div>
+            <p class="resultado"><svg class="ico"><use href="#i-check"/></svg><span><b>Qué debe pasar:</b> te explica que el botón crea un archivo <b>notes.csv</b> en tu carpeta de Descargas con dos columnas, <b>id</b> y <b>title</b>.</span></p>
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <section class="bloque" aria-labelledby="t-despues">
+      <h2 class="t-seccion" id="t-despues">¿Qué le puedes pedir después?</h2>
+      <p class="t-cuerpo">Empieza siempre tu mensaje con «Usa REA para…» y dile qué quieres entender. Estos son dos ejemplos de la web oficial.</p>
+      <div class="ejemplos">
+        <div class="msg">
+          <span class="msg-lbl"><svg class="ico"><use href="#i-equipo"/></svg>Entender una app de tu computadora</span>
+          <p id="msg-ej1">Usa REA para revisar la Calculadora de Windows. ¿Por qué 200 + 10% da 220?</p>
+          <button type="button" class="btn btn-secundario btn-chico copiar" data-de="msg-ej1"><svg class="ico"><use href="#i-copiar"/></svg><span class="lbl">Copiar mensaje</span></button>
+        </div>
+        <div class="msg">
+          <span class="msg-lbl"><svg class="ico"><use href="#i-codigo"/></svg>Entender y recrear una web</span>
+          <p id="msg-ej2">Usa REA para revisar el juego del dinosaurio en https://wayou.github.io/t-rex-runner/. ¿Por qué se vuelve más rápido? Explícame la regla de velocidad y luego crea una versión pequeña con la velocidad ajustable.</p>
+          <button type="button" class="btn btn-secundario btn-chico copiar" data-de="msg-ej2"><svg class="ico"><use href="#i-copiar"/></svg><span class="lbl">Copiar mensaje</span></button>
+        </div>
+      </div>
+      <p class="t-apoyo nota"><svg class="ico"><use href="#i-escudo"/></svg>Úsalo con apps y webs que tengas derecho a analizar, para aprender o para uso personal, y no para copiar productos de otros con fines comerciales.</p>
+    </section>
+
+    <section class="bloque" id="fallas" aria-labelledby="t-fallas">
+      <h2 class="t-seccion" id="t-fallas">¿Algo no funcionó?</h2>
+      <div class="fallas">
+        <div class="falla">
+          <svg class="ico ico-falla"><use href="#i-alerta"/></svg>
+          <div>
+            <h3 class="t-elemento">No veo la pestaña Code o me pide mejorar el plan</h3>
+            <p class="t-cuerpo">La pestaña Code solo funciona con un plan de pago. Si ya lo tienes, cierra sesión en Claude, vuelve a entrar y reinícialo.</p>
+          </div>
+        </div>
+        <div class="falla">
+          <svg class="ico ico-falla"><use href="#i-alerta"/></svg>
+          <div>
+            <h3 class="t-elemento">Claude dice que no encuentra Node.js después de instalarlo</h3>
+            <p class="t-cuerpo">Cierra Claude por completo como en el paso 5 y ábrelo de nuevo, porque los programas recién instalados solo aparecen al reiniciar. Si sigue igual, reinicia la computadora.</p>
+          </div>
+        </div>
+        <div class="falla">
+          <svg class="ico ico-falla"><use href="#i-alerta"/></svg>
+          <div>
+            <h3 class="t-elemento">Claude dice que no ve REA</h3>
+            <p class="t-cuerpo">Asegúrate de haber cerrado Claude por completo y de abrir una conversación nueva en la pestaña Code. Si sigue sin verlo, envíale este mensaje.</p>
+            <div class="msg">
+              <span class="msg-lbl"><svg class="ico"><use href="#i-chat"/></svg>Pégalo en el chat de la pestaña Code</span>
+              <p id="msg-doctor">Corre npx -y rea-agents@latest doctor --client claude_code --json, dime en palabras sencillas qué falla y arréglalo.</p>
+              <button type="button" class="btn btn-secundario btn-chico copiar" data-de="msg-doctor"><svg class="ico"><use href="#i-copiar"/></svg><span class="lbl">Copiar mensaje</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="t-apoyo">Si más adelante quieres quitar REA, pídele a Claude «Desinstala REA usando npx rea-agents@latest uninstall». Para más ayuda, revisa la <a class="enlace" href="https://rea.tools/get-started/" target="_blank" rel="noopener">página oficial de REA</a>.</p>
+    </section>
+
+    <section class="cierre" aria-labelledby="t-cierre">
+      <div>
+        <h2 class="t-seccion" id="t-cierre">¿Necesitas ayuda en algún paso?</h2>
+        <p class="t-cuerpo">Escríbeme y dime en qué paso vas y qué te aparece en pantalla, así te ayudo a resolverlo.</p>
+      </div>
+      <a class="btn btn-club" href="https://wa.me/584142276197" target="_blank" rel="noopener">Escríbeme por WhatsApp <span class="flecha">→</span></a>
+    </section>
+  </main>
+</div>
+
+<footer class="pie">
+  <div class="envoltura pie-fila">
+    <span class="marca-palabra">Jonatan Correa</span>
+    <span class="t-micro">Consultor y divulgador IA · Todos los derechos reservados.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var raiz=document.documentElement, clave='rea-guia-so';
+  function poner(so){
+    raiz.setAttribute('data-so',so);
+    [].forEach.call(document.querySelectorAll('[data-so-btn]'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-so-btn')===so?'true':'false')});
+    try{localStorage.setItem(clave,so)}catch(e){}
+  }
+  var guardado=null; try{guardado=localStorage.getItem(clave)}catch(e){}
+  var esMac=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent||'');
+  poner(guardado||(esMac?'mac':'win'));
+  [].forEach.call(document.querySelectorAll('[data-so-btn]'),function(b){b.addEventListener('click',function(){poner(b.getAttribute('data-so-btn'))})});
+
+  /* Copiar */
+  function seleccionar(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+  [].forEach.call(document.querySelectorAll('.copiar'),function(b){
+    var lbl=b.querySelector('.lbl')||b, original=lbl.textContent;
+    b.addEventListener('click',function(){
+      var el=document.getElementById(b.getAttribute('data-de')), texto=el.textContent.trim();
+      function listo(t){lbl.textContent=t;b.classList.add('copiado');setTimeout(function(){lbl.textContent=original;b.classList.remove('copiado')},1800)}
+      try{navigator.clipboard.writeText(texto).then(function(){listo('Copiado')},function(){seleccionar(el);listo('Selecciónalo y copia')})}
+      catch(e){seleccionar(el);listo('Selecciónalo y copia')}
+    });
+  });
+
+  /* Paso activo: índice lateral y barra del celular */
+  var pasos=[].slice.call(document.querySelectorAll('.paso')), total=pasos.length;
+  var num=document.getElementById('bm-num'), nom=document.getElementById('bm-nom'), relleno=document.getElementById('bm-relleno');
+  function activar(p){
+    var i=pasos.indexOf(p);
+    [].forEach.call(document.querySelectorAll('[data-ind]'),function(a){a.classList.toggle('activo',a.getAttribute('data-ind')===p.id)});
+    if(num){num.textContent='Paso '+(i+1)+' de '+total;nom.textContent=p.getAttribute('data-nom');relleno.style.width=((i+1)/total*100)+'%'}
+  }
+  if(pasos.length){
+    activar(pasos[0]);
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)activar(e.target)})},{rootMargin:'-35% 0px -60% 0px'});
+      pasos.forEach(function(p){io.observe(p)});
+    }
+  }
+})();
+
+</script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   MOVIMIENTO · Marca Jonatan Correa (sistema Altitud)
+   Va junto a marca.css. Sin dependencias. Cargar al final del <body>
+   (o con defer). Cada efecto se activa con un atributo en el HTML:
+
+   data-titular        titular que entra palabra por palabra; su .destacado se ajusta de ancho
+   data-rv             aparece al entrar en pantalla (subida corta + opacidad)
+   data-rv-grupo       en un contenedor: sus hijos con data-rv entran en cascada
+   data-linea          una línea (hr o div de 1px) que se dibuja de izquierda a derecha
+   data-dibujo         un isotipo SVG que se dibuja solo (trazos .trazo, punto .senal)
+   data-mascara        imagen que se revela con máscara
+   data-iman           botón que se acerca levemente al cursor (solo los principales)
+   data-lente          en .t-gigante: las letras se estrechan cerca del cursor
+   data-desliza        en .t-gigante: avanza de lado con el scroll
+   .cielo              el azul se intensifica donde está el cursor
+   .nav-links + .nav-ind   el indicador se desliza bajo el enlace señalado
+
+   Con "reducir movimiento" activado no se ejecuta nada: todo queda quieto y visible.
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  var d=document, root=d.documentElement;
+  if(!window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var fino=matchMedia('(pointer: fine)').matches;   // cursor real (no pantallas táctiles)
+  var $$=function(sel,ctx){return [].slice.call((ctx||d).querySelectorAll(sel))};
+
+  /* 1 · Partir titulares en palabras (respeta los <span class="destacado">) */
+  function partirPalabras(el){
+    var i=0;
+    (function recorrer(nodo){
+      [].slice.call(nodo.childNodes).forEach(function(c){
+        if(c.nodeType===3){
+          var frag=d.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach(function(p){
+            if(!p) return;
+            if(/^\s+$/.test(p)){frag.appendChild(d.createTextNode(p));return}
+            var w=d.createElement('span'),s=d.createElement('span');
+            w.className='w'; s.textContent=p; s.style.setProperty('--i',i++); w.appendChild(s); frag.appendChild(w);
+          });
+          c.parentNode.replaceChild(frag,c);
+        }else if(c.nodeType===1 && c.tagName!=='BR'){recorrer(c)}
+      });
+    })(el);
+    el.style.setProperty('--n',i);
+  }
+  $$('[data-titular]').forEach(partirPalabras);
+
+  /* 2 · Partir la palabra gigante en letras */
+  $$('.t-gigante').forEach(function(g){
+    var txt=g.textContent; g.textContent=''; g.setAttribute('aria-label',txt);
+    txt.split('').forEach(function(ch,i){
+      var s=d.createElement('span'); s.className='l'; s.setAttribute('aria-hidden','true');
+      s.textContent=ch===' '?' ':ch; s.style.setProperty('--i',i); g.appendChild(s);
+    });
+    if(!g.hasAttribute('data-rv')) g.setAttribute('data-rv','');
+  });
+
+  /* 3 · Cascadas: numerar los hijos de cada grupo */
+  $$('[data-rv-grupo]').forEach(function(gr){
+    $$('[data-rv],[data-linea]',gr).forEach(function(el,i){el.style.setProperty('--i',i)});
+  });
+
+  /* 4 · Aparición al entrar en pantalla (lo que ya está a la vista se anima de inmediato) */
+  var observables=$$('[data-rv],[data-titular],[data-linea],[data-dibujo],[data-mascara]');
+  root.classList.add('mov');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
+    },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    observables.forEach(function(el){io.observe(el)});
+  }else{observables.forEach(function(el){el.classList.add('in')})}
+
+  /* 5 · Pausar el ambiente (cielo, cinta) cuando no está a la vista: ahorra batería */
+  if('IntersectionObserver' in window){
+    var amb=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('pausa',!e.isIntersecting)})});
+    $$('.cielo,.cinta').forEach(function(el){amb.observe(el)});
+  }
+
+  /* 6 · Palabra gigante que se desliza con el scroll */
+  var deslizan=$$('.t-gigante[data-desliza]'), pendiente=false;
+  function alDesplazar(){
+    pendiente=false;
+    deslizan.forEach(function(g){
+      var r=g.getBoundingClientRect();
+      if(r.bottom<0||r.top>innerHeight) return;
+      g.style.setProperty('--gx',((r.top-innerHeight*.6)*.22).toFixed(1)+'px');
+    });
+  }
+  if(deslizan.length){
+    addEventListener('scroll',function(){if(!pendiente){pendiente=true;requestAnimationFrame(alDesplazar)}},{passive:true});
+    alDesplazar();
+  }
+
+  if(!fino) return;   /* lo que sigue depende del cursor */
+
+  /* 7 · El cielo se intensifica donde está el cursor */
+  $$('.cielo').forEach(function(c){
+    var raf=0;
+    c.addEventListener('pointermove',function(e){
+      var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
+      cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(function(){c.style.setProperty('--mx',x.toFixed(1)+'%');c.style.setProperty('--my',y.toFixed(1)+'%')});
+    });
+  });
+
+  /* 8 · Lente de ancho: las letras de la palabra gigante se estrechan cerca del cursor */
+  $$('.t-gigante[data-lente]').forEach(function(g){
+    var zona=g.closest('.cielo')||g.parentNode, letras=$$('.l',g), raf=0;
+    zona.addEventListener('pointermove',function(e){
+      var x=e.clientX; cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(function(){
+        letras.forEach(function(l){
+          var r=l.getBoundingClientRect(),t=Math.min(1,Math.abs(x-(r.left+r.width/2))/300);
+          l.style.fontStretch=(75+50*t).toFixed(0)+'%';
+        });
+      });
+    });
+    zona.addEventListener('pointerleave',function(){cancelAnimationFrame(raf);letras.forEach(function(l){l.style.fontStretch=''})});
+  });
+
+  /* 9 · Imán: el botón se acerca un poco al cursor (máximo ~8px) */
+  $$('[data-iman]').forEach(function(b){
+    b.addEventListener('pointermove',function(e){
+      var r=b.getBoundingClientRect();
+      b.style.transform='translate('+((e.clientX-r.left-r.width/2)*.16).toFixed(1)+'px,'+((e.clientY-r.top-r.height/2)*.28).toFixed(1)+'px)';
+    });
+    b.addEventListener('pointerleave',function(){b.style.transform=''});
+  });
+
+  /* 10 · Indicador de navegación que se desliza */
+  $$('.nav-links').forEach(function(nav){
+    var ind=nav.querySelector('.nav-ind'); if(!ind) return;
+    function mover(a){
+      if(!a){ind.style.setProperty('--o',0);return}
+      ind.style.setProperty('--x',a.offsetLeft+'px'); ind.style.setProperty('--w',a.offsetWidth+'px'); ind.style.setProperty('--o',1);
+    }
+    var actual=nav.querySelector('[aria-current]');
+    mover(actual);
+    $$('a',nav).forEach(function(a){a.addEventListener('pointerenter',function(){mover(a)})});
+    nav.addEventListener('pointerleave',function(){mover(actual)});
+  });
+})();
+
+</script>
+</body>
+</html>
